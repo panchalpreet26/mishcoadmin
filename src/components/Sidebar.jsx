@@ -13,7 +13,7 @@ import {
   X,
   Plus,
 } from "lucide-react";
-import logo from "../../../Frontend/src/assets/image/miscologo.png";
+import logo from "../assets/miscologo.png";
 
 const Sidebar = ({ onClose }) => {
   const navItems = [
