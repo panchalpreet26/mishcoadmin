@@ -114,6 +114,7 @@ export default function AddBlog() {
 
       const res = await axios.post(`${API_URL}/api/blogs/create`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
       });
 
       setSuccess(res.data.message || "Blog created successfully!");

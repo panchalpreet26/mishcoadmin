@@ -1,2 +1,1 @@
-// src/api.js
-export const Api = "https://mishcofinal.onrender.com";   // ← MUST BE http, NOT https
+export const Api = "https://mishcolife.com";

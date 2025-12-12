@@ -188,9 +188,7 @@ const ProductsPage = () => {
       await axios.put(
         `${API_BASE}/api/products/update/${selectedProduct._id}`,
         fd,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { withCredentials: true }
       );
       toast.success("Product updated!");
       setEditModal(false);
@@ -847,6 +845,7 @@ const ProductsPage = () => {
                       <input
                         type="file"
                         accept="image/*"
+                        name="productImages" 
                         onChange={handleImageChange}
                         multiple
                         className="block w-full text-sm text-gray-900 border rounded-md p-2"

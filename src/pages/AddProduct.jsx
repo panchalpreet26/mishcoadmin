@@ -25,7 +25,9 @@ export default function AddProduct() {
 
   const [composition, setComposition] = useState([{ name: "", strength: "" }]);
   const [uses, setUses] = useState([""]);
-  const [mechanismOfAction, setMechanismOfAction] = useState([{ drug: "", moa: "" }]);
+  const [mechanismOfAction, setMechanismOfAction] = useState([
+    { drug: "", moa: "" },
+  ]);
   const [indications, setIndications] = useState([""]);
   const [contraindications, setContraindications] = useState([""]);
   const [productImages, setProductImages] = useState([]);
@@ -128,11 +130,18 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.productName.trim() || !form.genericName.trim() || !form.strength.trim() || !form.category) {
-      alert("Please fill required fields: Product Name, Generic Name, Strength, Category.");
+    if (
+      !form.productName.trim() ||
+      !form.genericName.trim() ||
+      !form.strength.trim() ||
+      !form.category
+    ) {
+      alert(
+        "Please fill required fields: Product Name, Generic Name, Strength, Category."
+      );
       return;
     }
-    if (!uses.some(u => u.trim())) {
+    if (!uses.some((u) => u.trim())) {
       alert("Please add at least one use.");
       return;
     }
@@ -143,21 +152,35 @@ export default function AddProduct() {
 
       Object.keys(form).forEach((k) => fd.append(k, form[k]));
       fd.append("composition", JSON.stringify(composition));
-      fd.append("uses", JSON.stringify(uses.filter(u => u.trim())));
+      fd.append("uses", JSON.stringify(uses.filter((u) => u.trim())));
       fd.append("mechanismOfAction", JSON.stringify(mechanismOfAction));
-      fd.append("indications", JSON.stringify(indications.filter(i => i.trim())));
-      fd.append("contraindications", JSON.stringify(contraindications.filter(c => c.trim())));
+      fd.append(
+        "indications",
+        JSON.stringify(indications.filter((i) => i.trim()))
+      );
+      fd.append(
+        "contraindications",
+        JSON.stringify(contraindications.filter((c) => c.trim()))
+      );
 
       productImages.forEach((file) => fd.append("productImages", file));
 
       await axios.post(`${API_URL}/api/products/add`, fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+  withCredentials: true,
+});
+
 
       alert("Product added successfully!");
       resetForm();
     } catch (err) {
+      console.log(err,"errrer");
+      
       const msg = err?.response?.data?.message || "Failed to add product";
+      console.log(msg,"Preert ");
+      
       alert(msg);
     } finally {
       setLoading(false);
@@ -174,7 +197,9 @@ export default function AddProduct() {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
           <section className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Basic Information</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6">
+              Basic Information
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 name="productName"
@@ -238,7 +263,12 @@ export default function AddProduct() {
               <h2 className="text-xl font-bold text-gray-800">Composition</h2>
               <button
                 type="button"
-                onClick={() => addArrayObj(setComposition, composition, { name: "", strength: "" })}
+                onClick={() =>
+                  addArrayObj(setComposition, composition, {
+                    name: "",
+                    strength: "",
+                  })
+                }
                 className="mt-3 sm:mt-0 px-5 py-2.5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 text-sm font-medium transition"
               >
                 + Add Ingredient
@@ -247,22 +277,43 @@ export default function AddProduct() {
 
             <div className="space-y-4">
               {composition.map((c, i) => (
-                <div key={i} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                <div
+                  key={i}
+                  className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"
+                >
                   <input
                     value={c.name}
-                    onChange={(e) => updateArrayObj(setComposition, composition, i, "name", e.target.value)}
+                    onChange={(e) =>
+                      updateArrayObj(
+                        setComposition,
+                        composition,
+                        i,
+                        "name",
+                        e.target.value
+                      )
+                    }
                     placeholder="Ingredient Name *"
                     className="sm:col-span-5 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                   <input
                     value={c.strength}
-                    onChange={(e) => updateArrayObj(setComposition, composition, i, "strength", e.target.value)}
+                    onChange={(e) =>
+                      updateArrayObj(
+                        setComposition,
+                        composition,
+                        i,
+                        "strength",
+                        e.target.value
+                      )
+                    }
                     placeholder="Strength *"
                     className="sm:col-span-4 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                   <button
                     type="button"
-                    onClick={() => removeArrayObj(setComposition, composition, i)}
+                    onClick={() =>
+                      removeArrayObj(setComposition, composition, i)
+                    }
                     className="sm:col-span-3 px-4 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition text-sm font-medium"
                   >
                     Remove
@@ -289,7 +340,9 @@ export default function AddProduct() {
                 <div key={i} className="flex gap-3">
                   <input
                     value={u}
-                    onChange={(e) => updateStringArray(setUses, uses, i, e.target.value)}
+                    onChange={(e) =>
+                      updateStringArray(setUses, uses, i, e.target.value)
+                    }
                     placeholder="Enter use"
                     className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
@@ -308,10 +361,17 @@ export default function AddProduct() {
           {/* Mechanism of Action */}
           <section className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Mechanism of Action</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                Mechanism of Action
+              </h2>
               <button
                 type="button"
-                onClick={() => addArrayObj(setMechanismOfAction, mechanismOfAction, { drug: "", moa: "" })}
+                onClick={() =>
+                  addArrayObj(setMechanismOfAction, mechanismOfAction, {
+                    drug: "",
+                    moa: "",
+                  })
+                }
                 className="mt-3 sm:mt-0 px-5 py-2.5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 text-sm"
               >
                 + Add
@@ -319,22 +379,43 @@ export default function AddProduct() {
             </div>
             <div className="space-y-4">
               {mechanismOfAction.map((m, i) => (
-                <div key={i} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                <div
+                  key={i}
+                  className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"
+                >
                   <input
                     value={m.drug}
-                    onChange={(e) => updateArrayObj(setMechanismOfAction, mechanismOfAction, i, "drug", e.target.value)}
+                    onChange={(e) =>
+                      updateArrayObj(
+                        setMechanismOfAction,
+                        mechanismOfAction,
+                        i,
+                        "drug",
+                        e.target.value
+                      )
+                    }
                     placeholder="Drug Name"
                     className="sm:col-span-5 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                   <input
                     value={m.moa}
-                    onChange={(e) => updateArrayObj(setMechanismOfAction, mechanismOfAction, i, "moa", e.target.value)}
+                    onChange={(e) =>
+                      updateArrayObj(
+                        setMechanismOfAction,
+                        mechanismOfAction,
+                        i,
+                        "moa",
+                        e.target.value
+                      )
+                    }
                     placeholder="Mechanism"
                     className="sm:col-span-4 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                   <button
                     type="button"
-                    onClick={() => removeArrayObj(setMechanismOfAction, mechanismOfAction, i)}
+                    onClick={() =>
+                      removeArrayObj(setMechanismOfAction, mechanismOfAction, i)
+                    }
                     className="sm:col-span-3 px-4 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium"
                   >
                     Remove
@@ -363,13 +444,22 @@ export default function AddProduct() {
                   <div key={i} className="flex gap-3">
                     <input
                       value={it}
-                      onChange={(e) => updateStringArray(setIndications, indications, i, e.target.value)}
+                      onChange={(e) =>
+                        updateStringArray(
+                          setIndications,
+                          indications,
+                          i,
+                          e.target.value
+                        )
+                      }
                       placeholder="Indication"
                       className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                     />
                     <button
                       type="button"
-                      onClick={() => removeStringArray(setIndications, indications, i)}
+                      onClick={() =>
+                        removeStringArray(setIndications, indications, i)
+                      }
                       className="px-5 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
                     >
                       X
@@ -382,10 +472,14 @@ export default function AddProduct() {
             {/* Contraindications */}
             <section className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-800">Contraindications</h3>
+                <h3 className="text-xl font-bold text-gray-800">
+                  Contraindications
+                </h3>
                 <button
                   type="button"
-                  onClick={() => addStringArray(setContraindications, contraindications)}
+                  onClick={() =>
+                    addStringArray(setContraindications, contraindications)
+                  }
                   className="mt-3 sm:mt-0 px-5 py-2.5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 text-sm"
                 >
                   + Add
@@ -396,13 +490,26 @@ export default function AddProduct() {
                   <div key={i} className="flex gap-3">
                     <input
                       value={it}
-                      onChange={(e) => updateStringArray(setContraindications, contraindications, i, e.target.value)}
+                      onChange={(e) =>
+                        updateStringArray(
+                          setContraindications,
+                          contraindications,
+                          i,
+                          e.target.value
+                        )
+                      }
                       placeholder="Contraindication"
                       className="flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
                     />
                     <button
                       type="button"
-                      onClick={() => removeStringArray(setContraindications, contraindications, i)}
+                      onClick={() =>
+                        removeStringArray(
+                          setContraindications,
+                          contraindications,
+                          i
+                        )
+                      }
                       className="px-5 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
                     >
                       X
@@ -415,7 +522,9 @@ export default function AddProduct() {
 
           {/* Product Details */}
           <section className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">Product Details</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-6">
+              Product Details
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               <input
                 name="packSize"
@@ -456,7 +565,9 @@ export default function AddProduct() {
                   onChange={handleFormChange}
                   className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
                 />
-                <span className="text-gray-700 font-medium">Prescription Required</span>
+                <span className="text-gray-700 font-medium">
+                  Prescription Required
+                </span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -466,7 +577,9 @@ export default function AddProduct() {
                   onChange={handleFormChange}
                   className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
                 />
-                <span className="text-gray-700 font-medium">Featured Product</span>
+                <span className="text-gray-700 font-medium">
+                  Featured Product
+                </span>
               </label>
 
               <div className="flex items-center gap-4">
@@ -493,8 +606,12 @@ export default function AddProduct() {
 
           {/* Image Upload */}
           <section className="bg-white rounded-2xl shadow-lg p-5 sm:p-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Product Images</h2>
-            <p className="text-sm text-gray-500 mb-5">You can select multiple images at once.</p>
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Product Images
+            </h2>
+            <p className="text-sm text-gray-500 mb-5">
+              You can select multiple images at once.
+            </p>
 
             <input
               type="file"
@@ -506,7 +623,9 @@ export default function AddProduct() {
 
             {productImages.length > 0 && (
               <div className="mt-6">
-                <p className="font-medium text-gray-700 mb-3">Preview ({productImages.length} images)</p>
+                <p className="font-medium text-gray-700 mb-3">
+                  Preview ({productImages.length} images)
+                </p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
                   {productImages.map((file, index) => (
                     <div key={index} className="relative">
