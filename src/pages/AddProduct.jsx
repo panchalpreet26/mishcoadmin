@@ -166,21 +166,20 @@ export default function AddProduct() {
       productImages.forEach((file) => fd.append("productImages", file));
 
       await axios.post(`${API_URL}/api/products/add`, fd, {
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-  withCredentials: true,
-});
-
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
 
       alert("Product added successfully!");
       resetForm();
     } catch (err) {
-      console.log(err,"errrer");
-      
+      console.log(err, "errrer");
+
       const msg = err?.response?.data?.message || "Failed to add product";
-      console.log(msg,"Preert ");
-      
+      console.log(msg, "Preert ");
+
       alert(msg);
     } finally {
       setLoading(false);
@@ -584,20 +583,30 @@ export default function AddProduct() {
 
               <div className="flex items-center gap-4">
                 <span className="text-gray-700 font-medium">Color:</span>
-                <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden rounded-lg">
+
+                <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                  {/* COLOR PICKER */}
                   <input
                     type="color"
                     name="color"
-                    value={form.color}
+                    value={
+                      /^#([0-9A-Fa-f]{6})$/.test(form.color)
+                        ? form.color
+                        : "#000000"
+                    }
                     onChange={handleFormChange}
                     className="w-12 h-12 cursor-pointer border-0"
                   />
+
+                  {/* HEX INPUT */}
                   <input
                     type="text"
+                    name="color"
                     value={form.color}
                     onChange={handleFormChange}
-                    className="w-28 px-3 py-2 text-sm border-l border-gray-300 outline-none"
-                    placeholder="#f0f0f0"
+                    placeholder="#FFFFFF"
+                    maxLength={7}
+                    className="w-28 px-3 py-2 text-sm border-l border-gray-300 outline-none uppercase"
                   />
                 </div>
               </div>
